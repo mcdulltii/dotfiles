@@ -186,3 +186,8 @@ conda() {
   _conda_initialize
   conda "$@"
 }
+
+# Pure theme
+fpath+=$HOME/.zsh/pure
+autoload -U promptinit; promptinit
+prompt pure
