@@ -42,9 +42,6 @@ tasks = {
     '~/.vim_runtime/vimrcs/extended.vim' : 'vim/vimrcs/extended.vim',
     # '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
 
-    # NeoVIM
-    '~/.config/nvim' : 'nvim',
-
     # GIT
     '~/.gitconfig' : 'git/gitconfig',
     '~/.gitignore' : 'git/gitignore',
@@ -152,13 +149,6 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         '# zgen update (Skipped)'
 ]
 
-post_actions += [
-    '''#!/bin/bash
-    # validate neovim package installation on python2/3 and automatically install if missing
-    bash "etc/install-neovim-py.sh"
-''']
-
-vim = 'nvim' if find_executable('nvim') else 'vim'
 # post_actions += [
 #     # Run vim-plug installation
 #     {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
@@ -166,44 +156,44 @@ vim = 'nvim' if find_executable('nvim') else 'vim'
 #      'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
 #      }['update' if not args.skip_vimplug else 'none']
 # ]
-
-post_actions += [
-    # Install tmux plugins via tpm
-    '~/.tmux/plugins/tpm/bin/install_plugins',
-
-    r'''#!/bin/bash
-    # Check tmux version >= 2.3 (or use `dotfiles install tmux`)
-    _version_check() {    # target_ver current_ver
-        [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
-    }
-    if ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
-        echo -en "\033[0;33m"
-        echo -e "$(tmux -V) is too old. Contact system administrator, or:"
-        echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
-        exit 1;
-    else
-        echo "$(which tmux): $(tmux -V)"
-    fi
-    ln -s -f .tmux/.tmux.conf
-''']
-
-post_actions += [
-    r'''#!/bin/bash
-    # Setting up for coc.nvim (~/.config/coc, node.js)
-
-    # (i) create ~/.config/coc directory if not exists
-    GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
-    coc_dir="$HOME/.config/coc/"
-    if [ ! -d "$coc_dir" ]; then
-        mkdir -p "$coc_dir" || exit 1;
-        echo "Created: $coc_dir"
-    else
-        echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
-    fi
-
-    # (ii) validate or auto-install node.js locally
-    bash "etc/install-node.sh" || exit 1;
-''']
+# 
+# post_actions += [
+#     # Install tmux plugins via tpm
+#     '~/.tmux/plugins/tpm/bin/install_plugins',
+# 
+#     r'''#!/bin/bash
+#     # Check tmux version >= 2.3 (or use `dotfiles install tmux`)
+#     _version_check() {    # target_ver current_ver
+#         [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
+#     }
+#     if ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
+#         echo -en "\033[0;33m"
+#         echo -e "$(tmux -V) is too old. Contact system administrator, or:"
+#         echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
+#         exit 1;
+#     else
+#         echo "$(which tmux): $(tmux -V)"
+#     fi
+#     ln -s -f .tmux/.tmux.conf
+# ''']
+# 
+# post_actions += [
+#     r'''#!/bin/bash
+#     # Setting up for coc.nvim (~/.config/coc, node.js)
+# 
+#     # (i) create ~/.config/coc directory if not exists
+#     GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
+#     coc_dir="$HOME/.config/coc/"
+#     if [ ! -d "$coc_dir" ]; then
+#         mkdir -p "$coc_dir" || exit 1;
+#         echo "Created: $coc_dir"
+#     else
+#         echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
+#     fi
+# 
+#     # (ii) validate or auto-install node.js locally
+#     bash "etc/install-node.sh" || exit 1;
+# ''']
 
 post_actions += [
     r'''#!/bin/bash
