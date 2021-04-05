@@ -70,6 +70,7 @@ tasks = {
     # tmux
     '~/.tmux'      : 'tmux',
     '~/.tmux.conf' : 'tmux/tmux.conf',
+    '~/.tmux.conf.local' : 'tmux/tmux.conf.local',
 
     # .config (XDG-style)
     '~/.config/terminator' : 'config/terminator',
