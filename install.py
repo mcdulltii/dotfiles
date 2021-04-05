@@ -138,7 +138,7 @@ post_actions += [
     if [[ -n "$zsh_version" ]]; then
         echo -e "zsh $zsh_version $(which zsh)"
     else
-        ~/.local/bin/dotfiles install zsh
+        dotfiles install zsh
     fi
     zsh -c "
         # source zplug and list plugins
