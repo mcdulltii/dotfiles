@@ -99,16 +99,9 @@ if ! zgen saved; then
   # additional modules/plugins
   # --------------------------
 
-  if is-at-least 5.4; then
-    # zsh theme: powerlevel10k + customization
-    # p10k's minimum zsh requirement is 5.1 but we require zsh 5.4+,
-    # because without the instant mode initialization is slower than pure.
-    zgen load romkatv/powerlevel10k 'powerlevel10k.zsh-theme'
-  else
-    # zsh theme: pure (forked ver). For OLD zsh.
-    zgen load mafredri/zsh-async
-    zgen load wookayin/pure
-  fi
+  # zsh theme: pure (forked ver). For OLD zsh.
+  zgen load mafredri/zsh-async
+  zgen load wookayin/pure
 
   # zsh syntax: FSH
   # theme file (XDG:wook) is at ~/.config/fsh/wook.ini

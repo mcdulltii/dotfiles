@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 '''
-   @wookayin's              ███████╗██╗██╗     ███████╗███████╗
+                            ███████╗██╗██╗     ███████╗███████╗
    ██████╗  █████╗ ████████╗██╔════╝██║██║     ██╔════╝██╔════╝
    ██╔══██╗██╔══██╗╚══██╔══╝█████╗  ██║██║     █████╗  ███████╗
    ██║  ██║██║  ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
    ██████╔╝╚█████╔╝   ██║   ██║     ██║███████╗███████╗███████║
    ╚═════╝  ╚════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 
-   https://dotfiles.wook.kr/
 '''
 print(__doc__)  # print logo.
 
@@ -35,9 +34,13 @@ tasks = {
     '~/.screenrc' : 'screenrc',
 
     # VIM
-    '~/.vimrc' : 'vim/vimrc',
+    # '~/.vimrc' : 'vim/vimrc',
     '~/.vim' : 'vim',
-    '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
+    '~/.vim_runtime/vimrcs/basic.vim' : 'vim/vimrcs/basic.vim',
+    '~/.vim_runtime/vimrcs/filetypes.vim' : 'vim/vimrcs/filetypes.vim',
+    '~/.vim_runtime/vimrcs/plugins_config.vim' : 'vim/vimrcs/plugins_config.vim',
+    '~/.vim_runtime/vimrcs/extended.vim' : 'vim/vimrcs/extended.vim',
+    # '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
 
     # NeoVIM
     '~/.config/nvim' : 'nvim',
@@ -156,13 +159,13 @@ post_actions += [
 ''']
 
 vim = 'nvim' if find_executable('nvim') else 'vim'
-post_actions += [
-    # Run vim-plug installation
-    {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
-     'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
-     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
-     }['update' if not args.skip_vimplug else 'none']
-]
+# post_actions += [
+#     # Run vim-plug installation
+#     {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
+#      'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
+#      'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
+#      }['update' if not args.skip_vimplug else 'none']
+# ]
 
 post_actions += [
     # Install tmux plugins via tpm
@@ -181,6 +184,7 @@ post_actions += [
     else
         echo "$(which tmux): $(tmux -V)"
     fi
+    ln -s -f .tmux/.tmux.conf
 ''']
 
 post_actions += [
