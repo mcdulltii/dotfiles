@@ -34,6 +34,6 @@ set -e
 cd ~
 
 git clone --recursive ${GIT_FLAGS} ${GIT_REPO} ~/.dotfiles
-cd ~/.dotfiles && $PYTHON install.py
+cd ~/.dotfiles && $PYTHON install.py --one-liner
 
 echo "All Done!"
