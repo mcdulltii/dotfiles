@@ -9,6 +9,7 @@ Usage
 ### Installation:
 
 ```bash
+wget https://github.com/mcdulltii/dotfiles/blob/master/docker/Dockerfile
 docker build . --name docker_zsh
 docker run -it docker_zsh
 ```
