@@ -99,15 +99,8 @@ if ! zgen saved; then
   # additional modules/plugins
   # --------------------------
 
-  # zsh theme: pure (forked ver). For OLD zsh.
-  zgen load mafredri/zsh-async
-  zgen load wookayin/pure
-
-  # zsh syntax: FSH
-  # theme file (XDG:wook) is at ~/.config/fsh/wook.ini
   # For some reason, @zdharma's repo is gone -- workaround by using its fork
   zgen load wookayin/fast-syntax-highlighting
-  fast-theme "XDG:wook"
 
   # More completion support
   zgen load esc/conda-zsh-completion
