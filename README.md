@@ -6,9 +6,13 @@ Dotfiles
 Installation
 ------------
 
-### 👉 One-liner (if you trust me):
+### 👉 Package Installation:
 
 ```bash
+apt update && apt install python3-pip
+pip3 install wheel setuptools
+pip3 install pynvim
+
 curl -fsSL https://raw.githubusercontent.com/mcdulltii/dotfiles/master/etc/install | bash
 ```
 
