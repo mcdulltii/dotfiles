@@ -127,14 +127,16 @@ post_actions += [
 
 post_actions += [
     '''#!/bin/bash
-    # Update zgen modules and cache (the init file)
-    
     zsh_version=$(zsh --version 2>/dev/null)
     if [[ -n "$zsh_version" ]]; then
         echo -e "zsh $zsh_version $(which zsh)"
     else
-        dotfiles install zsh
+        dotfiles install zsh;
+''']
 
+post_actions += [
+    '''#!/bin/bash
+    # Update zgen modules and cache (the init file)
     zsh -c "
         # source zplug and list plugins
         DOTFILES_UPDATE=1 __p9k_instant_prompt_disabled=1 source ${HOME}/.zshrc
@@ -152,6 +154,13 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         '# zgen update (Skipped)'
 ]
 
+# post_actions += [
+#     '''#!/bin/bash
+#     # validate neovim package installation on python2/3 and automatically install if missing
+#     bash "etc/install-neovim-py.sh"
+# ''']
+
+# vim = 'nvim' if find_executable('nvim') else 'vim'
 vim = 'vim'
 post_actions += [
     # Run vim-plug installation
