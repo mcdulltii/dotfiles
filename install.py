@@ -417,5 +417,3 @@ log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
 log("- To install some packages locally (e.g. neovim, tmux), try " + CYAN("`dotfiles install <package>`"))
 log("- If you want to update dotfiles (or have any errors), try " + CYAN("`dotfiles update`"))
 log("\n\n", cr=False)
-
-sys.exit(len(errors))
