@@ -34,9 +34,9 @@ tasks = {
     '~/.screenrc' : 'screenrc',
 
     # VIM
-    # '~/.vimrc' : 'vim/vimrc',
+    '~/.vimrc' : 'vim/vimrc',
     '~/.vim' : 'vim',
-    # '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
+    '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
 
     # GIT
     '~/.gitconfig' : 'git/gitconfig',
@@ -110,8 +110,6 @@ Please remove your local folder/file $f and try again.\033[0m"
             echo "$f --> $(readlink $f)"
         fi
     done
-    git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime
-    ~/.vim_runtime/install_awesome_vimrc.sh
 ''']
 
 post_actions += [
