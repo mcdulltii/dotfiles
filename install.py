@@ -10,7 +10,7 @@
    ╚═════╝  ╚════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 
 '''
-print(__doc__)  # print logo.
+# print(__doc__)  # print logo.
 
 
 import argparse
