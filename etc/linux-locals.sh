@@ -130,7 +130,7 @@ install_zsh() {
     apt update && apt install zsh -y
 }
 
-install_local_node() {
+install_node() {
     # Install node.js LTS at ~/.local
     set -e
     curl -sL install-node.now.sh | bash -s -- --prefix=$HOME/.local --verbose --yes
@@ -142,16 +142,6 @@ install_local_node() {
     $HOME/.local/bin/npm install -g yarn
     which yarn && yarn --version
     $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
-}
-
-install_node() {
-    set -e
-    apt update && apt install nodejs npm -y
-    
-    # install some useful nodejs based utility (~/.local/lib/node_modules)
-    npm install -g yarn
-    which yarn && yarn --version
-    npm install -g http-server diff-so-fancy || true;
 }
 
 install_local_tmux() {
