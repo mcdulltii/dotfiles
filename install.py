@@ -21,6 +21,8 @@ parser.add_argument('--skip-vimplug', action='store_true',
                     help='If set, do not update vim plugins.')
 parser.add_argument('--skip-zgen', '--skip-zplug', action='store_true',
                     help='If set, skip zgen updates.')
+parser.add_argument('--one-liner', action='store_true',
+                    help='Used by one-liner installation.')
 
 args = parser.parse_args()
 
@@ -384,6 +386,12 @@ for target, source in sorted(tasks.items()):
             BLUE(target),
             GREEN("symlink created from '%s'" % source)
         ))
+
+if args.one_liner:
+    log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
+    log("- Next step: " + CYAN("`dotfiles update`"))
+    log("\n\n", cr=False)
+    sys.exit()
 
 errors = []
 for action in post_actions:
