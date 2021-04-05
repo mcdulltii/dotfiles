@@ -34,7 +34,7 @@ ${RESET}"
         done
         if [[ "$user_prompt" == [Yy]* ]]; then
             echo -e "\n${GREEN}Installing node.js into ~/.local/ ...${RESET}";
-            dotfiles install node && exit 0;
+            ~/.local/bin/dotfiles install node && exit 0;
         fi
     fi
 
