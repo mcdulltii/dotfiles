@@ -36,10 +36,6 @@ tasks = {
     # VIM
     # '~/.vimrc' : 'vim/vimrc',
     '~/.vim' : 'vim',
-    '~/.vim_runtime/vimrcs/basic.vim' : 'vim/vimrcs/basic.vim',
-    '~/.vim_runtime/vimrcs/filetypes.vim' : 'vim/vimrcs/filetypes.vim',
-    '~/.vim_runtime/vimrcs/plugins_config.vim' : 'vim/vimrcs/plugins_config.vim',
-    '~/.vim_runtime/vimrcs/extended.vim' : 'vim/vimrcs/extended.vim',
     # '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
 
     # GIT
@@ -114,6 +110,8 @@ Please remove your local folder/file $f and try again.\033[0m"
             echo "$f --> $(readlink $f)"
         fi
     done
+    git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime
+    ~/.vim_runtime/install_awesome_vimrc.sh
 ''']
 
 post_actions += [
@@ -156,11 +154,11 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 #      'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
 #      }['update' if not args.skip_vimplug else 'none']
 # ]
-# 
+#
 # post_actions += [
 #     # Install tmux plugins via tpm
 #     '~/.tmux/plugins/tpm/bin/install_plugins',
-# 
+#
 #     r'''#!/bin/bash
 #     # Check tmux version >= 2.3 (or use `dotfiles install tmux`)
 #     _version_check() {    # target_ver current_ver
@@ -176,11 +174,11 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 #     fi
 #     ln -s -f .tmux/.tmux.conf
 # ''']
-# 
+#
 # post_actions += [
 #     r'''#!/bin/bash
 #     # Setting up for coc.nvim (~/.config/coc, node.js)
-# 
+#
 #     # (i) create ~/.config/coc directory if not exists
 #     GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
 #     coc_dir="$HOME/.config/coc/"
@@ -190,7 +188,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
 #     else
 #         echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
 #     fi
-# 
+#
 #     # (ii) validate or auto-install node.js locally
 #     bash "etc/install-node.sh" || exit 1;
 # ''']
