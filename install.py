@@ -147,6 +147,7 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         '# zgen update (Skipped)'
 ]
 
+vim = 'vim'
 post_actions += [
     # Run vim-plug installation
     {'install' : 'vim +PlugInstall +qall'.format(vim=vim),
