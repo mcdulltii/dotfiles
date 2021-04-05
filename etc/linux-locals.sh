@@ -50,7 +50,7 @@ for asset in J[0]['assets']:
 
 #---------------------------------------------------------------------------------------------------
 
-install_git() {
+install_local_git() {
     # installs a modern version of git locally.
     set -e
 
@@ -70,6 +70,17 @@ install_git() {
 
     if [[ ! -f "$(~/.local/bin/git --exec-path)/git-remote-https" ]]; then
         echo -e "${COLOR_YELLOW}Warning: $(~/.local/bin/git --exec-path)/git-remote-https not found. "
+        echo -e "https:// git url will not work. Please install libcurl-dev and try again.${COLOR_NONE}"
+        false;
+    fi
+}
+
+install_git() {
+    set -e
+    apt update && apt install git -y
+    
+    if [[ ! -f "$(git --exec-path)/git-remote-https" ]]; then
+        echo -e "${COLOR_YELLOW}Warning: $(git --exec-path)/git-remote-https not found. "
         echo -e "https:// git url will not work. Please install libcurl-dev and try again.${COLOR_NONE}"
         false;
     fi
@@ -143,7 +154,7 @@ install_node() {
     npm install -g http-server diff-so-fancy || true;
 }
 
-install_tmux() {
+install_local_tmux() {
     # install tmux (and its dependencies such as libevent) locally
     set -e
     TMUX_VER="2.4"
@@ -178,6 +189,11 @@ install_tmux() {
 
     make clean && make -j4 && make install
     ~/.local/bin/tmux -V
+}
+
+install_tmux() {
+    set -e
+    apt update && apt install tmux -y
 }
 
 install_bazel() {
@@ -255,7 +271,7 @@ install_miniconda() {
     echo "${COLOR_GREEN}All set!${COLOR_NONE}"
 }
 
-install_vim() {
+install_local_vim() {
     # install latest vim
     set -e
 
@@ -292,6 +308,17 @@ install_vim() {
     make clean && make -j8 && make install
     ~/.local/bin/vim --version | head -n2
 
+    # make sure that all necessary features are shipped
+    if ! (vim --version | grep -q '+python3'); then
+        echo "vim: python is not enabled"
+        exit 1;
+    fi
+}
+
+install_vim() {
+    set -e
+    apt update && apt install vim -y
+    
     # make sure that all necessary features are shipped
     if ! (vim --version | grep -q '+python3'); then
         echo "vim: python is not enabled"
