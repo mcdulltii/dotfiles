@@ -131,7 +131,7 @@ post_actions += [
     
     zsh_version=$(zsh --version 2>/dev/null)
     if [[ -n "$zsh_version" ]]; then
-        echo -e "${GREEN}zsh $zsh_version:${RESET} $(which zsh)"
+        echo -e "zsh $zsh_version $(which zsh)"
     else
         dotfiles install zsh
 
