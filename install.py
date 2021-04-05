@@ -127,16 +127,13 @@ post_actions += [
 
 post_actions += [
     '''#!/bin/bash
+    # Update zgen modules and cache (the init file)
     zsh_version=$(zsh --version 2>/dev/null)
     if [[ -n "$zsh_version" ]]; then
         echo -e "zsh $zsh_version $(which zsh)"
     else
-        dotfiles install zsh;
-''']
-
-post_actions += [
-    '''#!/bin/bash
-    # Update zgen modules and cache (the init file)
+        dotfiles install zsh
+    fi
     zsh -c "
         # source zplug and list plugins
         DOTFILES_UPDATE=1 __p9k_instant_prompt_disabled=1 source ${HOME}/.zshrc
