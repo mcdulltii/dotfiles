@@ -27,6 +27,8 @@ docker build . -t docker_zsh
 docker run -it docker_zsh
 ```
 
+Troubleshooting for docker image in [`./docker/`](./docker/README.md)
+
 `$ dotfiles`
 ------------
 
