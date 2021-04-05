@@ -93,30 +93,33 @@ install_ncurses() {
     make clean && make -j4 && make install
 }
 
-install_zsh() {
+install_local_zsh() {
     set -e
 
-#     ZSH_VER="5.4.1"
-#     TMP_ZSH_DIR="/tmp/$USER/zsh/"; mkdir -p $TMP_ZSH_DIR
+    ZSH_VER="5.4.1"
+    TMP_ZSH_DIR="/tmp/$USER/zsh/"; mkdir -p $TMP_ZSH_DIR
 
-#     wget -nc -O $TMP_ZSH_DIR/zsh.tar.gz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.gz/download"
-#     tar -xvzf $TMP_ZSH_DIR/zsh.tar.gz -C $TMP_ZSH_DIR --strip-components 1
-#     cd $TMP_ZSH_DIR
+    wget -nc -O $TMP_ZSH_DIR/zsh.tar.gz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.gz/download"
+    tar -xvzf $TMP_ZSH_DIR/zsh.tar.gz -C $TMP_ZSH_DIR --strip-components 1
+    cd $TMP_ZSH_DIR
 
-#     if [[ -d "$PREFIX/include/ncurses" ]]; then
-#         export CFLAGS="-I$PREFIX/include -I$PREFIX/include/ncurses"
-#         export LDFLAGS="-L$PREFIX/lib/"
-#     fi
+    if [[ -d "$PREFIX/include/ncurses" ]]; then
+        export CFLAGS="-I$PREFIX/include -I$PREFIX/include/ncurses"
+        export LDFLAGS="-L$PREFIX/lib/"
+    fi
 
-#     ./configure --prefix="$PREFIX"
-#     make clean && make -j8 && make install
+    ./configure --prefix="$PREFIX"
+    make clean && make -j8 && make install
 
-    apt update && apt install zsh -y
-
-#     ~/.local/bin/zsh --version
+    ~/.local/bin/zsh --version
 }
 
-install_node() {
+install_zsh() {
+    set -e
+    apt update && apt install zsh -y
+}
+
+install_local_node() {
     # Install node.js LTS at ~/.local
     set -e
     curl -sL install-node.now.sh | bash -s -- --prefix=$HOME/.local --verbose --yes
@@ -128,6 +131,16 @@ install_node() {
     $HOME/.local/bin/npm install -g yarn
     which yarn && yarn --version
     $HOME/.local/bin/npm install -g http-server diff-so-fancy || true;
+}
+
+install_node() {
+    set -e
+    apt update && apt install nodejs npm -y
+    
+    # install some useful nodejs based utility (~/.local/lib/node_modules)
+    npm install -g yarn
+    which yarn && yarn --version
+    npm install -g http-server diff-so-fancy || true;
 }
 
 install_tmux() {
