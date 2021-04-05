@@ -47,7 +47,7 @@ else
     if [ `uname` == "Darwin" ]; then
         NEOVIM_INSTALL_CMD="brew install neovim"
     else
-        NEOVIM_INSTALL_CMD="dotfiles install neovim"
+        NEOVIM_INSTALL_CMD="~/.local/bin/dotfiles install neovim"
     fi
     echo -e "${RED}Neovim not found. Please install using '${NEOVIM_INSTALL_CMD}'.${RESET}"
 
@@ -64,7 +64,7 @@ else
         done
         if [[ "$user_prompt" == [Yy]* ]]; then
             echo -e "\n${GREEN}Installing neovim into ~/.local/bin/ ...${RESET}";
-            $HOME/.dotfiles/bin/dotfiles install neovim && exit 0;
+            $HOME/.local/bin/dotfiles install neovim && exit 0;
         fi
     fi
 
