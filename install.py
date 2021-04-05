@@ -37,6 +37,9 @@ tasks = {
     '~/.vimrc' : 'vim/vimrc',
     '~/.vim' : 'vim',
     '~/.vim/autoload/plug.vim' : 'vim/bundle/vim-plug/plug.vim',
+  
+    # NeoVIM
+    '~/.config/nvim' : 'nvim',
 
     # GIT
     '~/.gitconfig' : 'git/gitconfig',
@@ -152,14 +155,13 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         '# zgen update (Skipped)'
 ]
 
-# post_actions += [
-#     '''#!/bin/bash
-#     # validate neovim package installation on python2/3 and automatically install if missing
-#     bash "etc/install-neovim-py.sh"
-# ''']
+post_actions += [
+    '''#!/bin/bash
+    # validate neovim package installation on python2/3 and automatically install if missing
+    bash "etc/install-neovim-py.sh"
+''']
 
-# vim = 'nvim' if find_executable('nvim') else 'vim'
-vim = 'vim'
+vim = 'nvim' if find_executable('nvim') else 'vim'
 post_actions += [
     # Run vim-plug installation
     {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
