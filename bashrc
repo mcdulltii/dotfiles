@@ -32,6 +32,10 @@ else
 fi
 alias ll='ls -alF'
 
+# Custom
+alias cls='clear'
+alias q='exit'
+
 # grep
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
