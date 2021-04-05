@@ -147,13 +147,13 @@ ERROR: zgen not found. Double check the submodule exists, and you have a valid ~
         '# zgen update (Skipped)'
 ]
 
-# post_actions += [
-#     # Run vim-plug installation
-#     {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
-#      'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
-#      'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
-#      }['update' if not args.skip_vimplug else 'none']
-# ]
+post_actions += [
+    # Run vim-plug installation
+    {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
+     'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
+     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
+     }['update' if not args.skip_vimplug else 'none']
+]
 
 post_actions += [
     # Install tmux plugins via tpm
