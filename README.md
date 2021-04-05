@@ -19,6 +19,13 @@ curl -fsSL https://raw.githubusercontent.com/mcdulltii/dotfiles/master/etc/insta
 The installation script will clone the repository into `~/.dotfiles` and create symbolic links (e.g., `~/.vimrc`) for you.
 If target files already exist (e.g. `~/.vim`, `~/.vimrc`), you will need to manually resolve the conflict (delete the old one or just ignore). See Troubleshooting below for details.
 
+### Docker Installation:
+
+```
+wget https://github.com/mcdulltii/dotfiles/raw/master/docker/Dockerfile
+docker build . -t docker_zsh
+docker run -it docker_zsh
+```
 
 `$ dotfiles`
 ------------
