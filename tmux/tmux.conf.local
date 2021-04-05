@@ -106,7 +106,7 @@ bind-key S-Right swap-window -t :+       # move right
 bind-key / command-prompt "move-window -t '%%'"
 
 # change the number of the current window (i.e. move window)
-bind-key % command-prompt -I "#I" "move-window -t '%%'"
+# bind-key % command-prompt -I "#I" "move-window -t '%%'"
 
 # change the name of the current window (shift-a)
 bind-key A command-prompt -I "#W" "rename-window '%%'"
