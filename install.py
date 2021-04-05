@@ -102,160 +102,162 @@ except ImportError:
 
 
 post_actions = []
-post_actions += [
-    '''#!/bin/bash
-    # Check whether ~/.vim and ~/.zsh are well-configured
-    for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
-        if ! readlink $f >/dev/null; then
-            echo -e "\033[0;31m\
-WARNING: $f is not a symbolic link to ~/.dotfiles.
-Please remove your local folder/file $f and try again.\033[0m"
-            echo -n "(Press any key to continue) "; read user_confirm
+
+if args.one_liner:
+    post_actions += [
+        '''#!/bin/bash
+        # validate neovim package installation on python2/3 and automatically install if missing
+        bash "etc/install-neovim-py.sh"
+    ''']
+
+    vim = 'nvim' if find_executable('nvim') else 'vim'
+    post_actions += [
+        # Run vim-plug installation
+        {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
+         'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
+         'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
+         }['update' if not args.skip_vimplug else 'none']
+    ]
+    
+    post_actions += [
+        r'''#!/bin/bash
+        # Setting up for coc.nvim (~/.config/coc, node.js)
+
+        # (i) create ~/.config/coc directory if not exists
+        GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
+        coc_dir="$HOME/.config/coc/"
+        if [ ! -d "$coc_dir" ]; then
+            mkdir -p "$coc_dir" || exit 1;
+            echo "Created: $coc_dir"
+        else
+            echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
+        fi
+
+        # (ii) validate or auto-install node.js locally
+        bash "etc/install-node.sh" || exit 1;
+    ''']
+    
+    post_actions += [
+        '''#!/bin/bash
+        # Update zgen modules and cache (the init file)
+        zsh_version=$(zsh --version 2>/dev/null)
+        if [[ -n "$zsh_version" ]]; then
+            echo -e "zsh $zsh_version $(which zsh)"
+        else
+            dotfiles install zsh
+        fi
+        zsh -c "
+            # source zplug and list plugins
+            DOTFILES_UPDATE=1 __p9k_instant_prompt_disabled=1 source ${HOME}/.zshrc
+            if ! which zgen > /dev/null; then
+                echo -e '\033[0;31m\
+    ERROR: zgen not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
+                ls -alh ~/.zsh/zgen/
+                ls -alh ~/.zshrc
+                exit 1;
+            fi
+            zgen reset
+            zgen update
+        "
+        ''' if not args.skip_zgen else \
+            '# zgen update (Skipped)'
+    ]
+    
+    post_actions += [
+        r'''#!/bin/bash
+        # Change default shell to zsh
+        /bin/zsh --version >/dev/null || (\
+            echo -e "\033[0;31mError: /bin/zsh not found. Please install zsh.\033[0m"; exit 1)
+        if [[ ! "$SHELL" = *zsh ]]; then
+            echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
+            chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
+        else
+            echo -e "\033[0;32m\$SHELL is already zsh.\033[0m $(zsh --version)"
+        fi
+        mkdir -p "$HOME/.zsh"
+        git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+    ''']
+    
+    post_actions += [
+        r'''#!/bin/bash
+        # Create ~/.gitconfig.secret file and check user configuration
+        if [ ! -f ~/.gitconfig.secret ]; then
+            cat > ~/.gitconfig.secret <<EOL
+    # vim: set ft=gitconfig:
+    EOL
+        fi
+        if ! git config --file ~/.gitconfig.secret user.name 2>&1 > /dev/null || \
+           ! git config --file ~/.gitconfig.secret user.email 2>&1 > /dev/null; then echo -ne '
+        \033[1;33m[!!!] Please configure git user name and email:
+            git config --file ~/.gitconfig.secret user.name "(YOUR NAME)"
+            git config --file ~/.gitconfig.secret user.email "(YOUR EMAIL)"
+    \033[0m'
+            echo -en '\n'
+            echo -en "(git config user.name) \033[0;33m Please input your name  : \033[0m"; read git_username
+            echo -en "(git config user.email)\033[0;33m Please input your email : \033[0m"; read git_useremail
+            if [[ -n "$git_username" ]] && [[ -n "$git_useremail" ]]; then
+                git config --file ~/.gitconfig.secret user.name "$git_username"
+                git config --file ~/.gitconfig.secret user.email "$git_useremail"
+            else
+                exit 1;   # error
+            fi
+        fi
+
+        # get the current config
+        echo -en '\033[0;32m';
+        echo -en 'user.name  : '; git config --file ~/.gitconfig.secret user.name
+        echo -en 'user.email : '; git config --file ~/.gitconfig.secret user.email
+        echo -en '\033[0m';
+    ''']
+else:
+    post_actions += [
+        '''#!/bin/bash
+        # Check whether ~/.vim and ~/.zsh are well-configured
+        for f in ~/.vim ~/.zsh ~/.vimrc ~/.zshrc; do
+            if ! readlink $f >/dev/null; then
+                echo -e "\033[0;31m\
+    WARNING: $f is not a symbolic link to ~/.dotfiles.
+    Please remove your local folder/file $f and try again.\033[0m"
+                echo -n "(Press any key to continue) "; read user_confirm
+                exit 1;
+            else
+                echo "$f --> $(readlink $f)"
+            fi
+        done
+    ''']
+
+    post_actions += [
+        '''#!/bin/bash
+        # Download command line scripts
+        mkdir -p "$HOME/.local/bin/"
+        _download() {
+            curl -L "$2" > "$1" && chmod +x "$1"
+        }
+        ret=0
+        set -v
+        _download "$HOME/.local/bin/video2gif" "https://raw.githubusercontent.com/wookayin/video2gif/master/video2gif" || ret=1
+        exit $ret;
+    ''']
+
+    post_actions += [
+        # Install tmux plugins via tpm
+        '~/.tmux/plugins/tpm/bin/install_plugins',
+
+        r'''#!/bin/bash
+        # Check tmux version >= 2.3 (or use `dotfiles install tmux`)
+        _version_check() {    # target_ver current_ver
+            [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
+        }
+        if ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
+            echo -en "\033[0;33m"
+            echo -e "$(tmux -V) is too old. Contact system administrator, or:"
+            echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
             exit 1;
         else
-            echo "$f --> $(readlink $f)"
+            echo "$(which tmux): $(tmux -V)"
         fi
-    done
-''']
-
-post_actions += [
-    '''#!/bin/bash
-    # Download command line scripts
-    mkdir -p "$HOME/.local/bin/"
-    _download() {
-        curl -L "$2" > "$1" && chmod +x "$1"
-    }
-    ret=0
-    set -v
-    _download "$HOME/.local/bin/video2gif" "https://raw.githubusercontent.com/wookayin/video2gif/master/video2gif" || ret=1
-    exit $ret;
-''']
-
-post_actions += [
-    '''#!/bin/bash
-    # Update zgen modules and cache (the init file)
-    zsh_version=$(zsh --version 2>/dev/null)
-    if [[ -n "$zsh_version" ]]; then
-        echo -e "zsh $zsh_version $(which zsh)"
-    else
-        dotfiles install zsh
-    fi
-    zsh -c "
-        # source zplug and list plugins
-        DOTFILES_UPDATE=1 __p9k_instant_prompt_disabled=1 source ${HOME}/.zshrc
-        if ! which zgen > /dev/null; then
-            echo -e '\033[0;31m\
-ERROR: zgen not found. Double check the submodule exists, and you have a valid ~/.zshrc!\033[0m'
-            ls -alh ~/.zsh/zgen/
-            ls -alh ~/.zshrc
-            exit 1;
-        fi
-        zgen reset
-        zgen update
-    "
-    ''' if not args.skip_zgen else \
-        '# zgen update (Skipped)'
-]
-
-post_actions += [
-    '''#!/bin/bash
-    # validate neovim package installation on python2/3 and automatically install if missing
-    bash "etc/install-neovim-py.sh"
-''']
-
-vim = 'nvim' if find_executable('nvim') else 'vim'
-post_actions += [
-    # Run vim-plug installation
-    {'install' : '{vim} +PlugInstall +qall'.format(vim=vim),
-     'update'  : '{vim} +PlugUpdate  +qall'.format(vim=vim),
-     'none'    : '# {vim} +PlugUpdate (Skipped)'.format(vim=vim)
-     }['update' if not args.skip_vimplug else 'none']
-]
-
-post_actions += [
-    # Install tmux plugins via tpm
-    '~/.tmux/plugins/tpm/bin/install_plugins',
-
-    r'''#!/bin/bash
-    # Check tmux version >= 2.3 (or use `dotfiles install tmux`)
-    _version_check() {    # target_ver current_ver
-        [ "$1" = "$(echo -e "$1\n$2" | sort -s -t- -k 2,2n | sort -t. -s -k 1,1n -k 2,2n | head -n1)" ]
-    }
-    if ! _version_check "2.3" "$(tmux -V | cut -d' ' -f2)"; then
-        echo -en "\033[0;33m"
-        echo -e "$(tmux -V) is too old. Contact system administrator, or:"
-        echo -e "  $ dotfiles install tmux  \033[0m (installs to ~/.local/, if you don't have sudo)"
-        exit 1;
-    else
-        echo "$(which tmux): $(tmux -V)"
-    fi
-    ln -s -f .tmux/.tmux.conf
-''']
-
-post_actions += [
-    r'''#!/bin/bash
-    # Setting up for coc.nvim (~/.config/coc, node.js)
-
-    # (i) create ~/.config/coc directory if not exists
-    GREEN="\033[0;32m"; YELLOW="\033[0;33m"; RESET="\033[0m";
-    coc_dir="$HOME/.config/coc/"
-    if [ ! -d "$coc_dir" ]; then
-        mkdir -p "$coc_dir" || exit 1;
-        echo "Created: $coc_dir"
-    else
-        echo -e "${GREEN}coc directory:${RESET}   $coc_dir"
-    fi
-
-    # (ii) validate or auto-install node.js locally
-    bash "etc/install-node.sh" || exit 1;
-''']
-
-post_actions += [
-    r'''#!/bin/bash
-    # Change default shell to zsh
-    /bin/zsh --version >/dev/null || (\
-        echo -e "\033[0;31mError: /bin/zsh not found. Please install zsh.\033[0m"; exit 1)
-    if [[ ! "$SHELL" = *zsh ]]; then
-        echo -e '\033[0;33mPlease type your password if you wish to change the default shell to ZSH\e[m'
-        chsh -s /bin/zsh && echo -e 'Successfully changed the default shell, please re-login'
-    else
-        echo -e "\033[0;32m\$SHELL is already zsh.\033[0m $(zsh --version)"
-    fi
-    mkdir -p "$HOME/.zsh"
-    git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
-''']
-
-post_actions += [
-    r'''#!/bin/bash
-    # Create ~/.gitconfig.secret file and check user configuration
-    if [ ! -f ~/.gitconfig.secret ]; then
-        cat > ~/.gitconfig.secret <<EOL
-# vim: set ft=gitconfig:
-EOL
-    fi
-    if ! git config --file ~/.gitconfig.secret user.name 2>&1 > /dev/null || \
-       ! git config --file ~/.gitconfig.secret user.email 2>&1 > /dev/null; then echo -ne '
-    \033[1;33m[!!!] Please configure git user name and email:
-        git config --file ~/.gitconfig.secret user.name "(YOUR NAME)"
-        git config --file ~/.gitconfig.secret user.email "(YOUR EMAIL)"
-\033[0m'
-        echo -en '\n'
-        echo -en "(git config user.name) \033[0;33m Please input your name  : \033[0m"; read git_username
-        echo -en "(git config user.email)\033[0;33m Please input your email : \033[0m"; read git_useremail
-        if [[ -n "$git_username" ]] && [[ -n "$git_useremail" ]]; then
-            git config --file ~/.gitconfig.secret user.name "$git_username"
-            git config --file ~/.gitconfig.secret user.email "$git_useremail"
-        else
-            exit 1;   # error
-        fi
-    fi
-
-    # get the current config
-    echo -en '\033[0;32m';
-    echo -en 'user.name  : '; git config --file ~/.gitconfig.secret user.name
-    echo -en 'user.email : '; git config --file ~/.gitconfig.secret user.email
-    echo -en '\033[0m';
-''']
+        ln -s -f .tmux/.tmux.conf
+    ''']
 
 ################# END OF FIXME #################
 
@@ -390,7 +392,7 @@ for target, source in sorted(tasks.items()):
 if args.one_liner:
     log("\n", cr=False)
     log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
-    log("- Next step: " + CYAN("`dotfiles update`"))
+    log("- Next step: " + CYAN("`dotfiles update`") + " to finish installation.")
     log("\n", cr=False)
     sys.exit()
 
