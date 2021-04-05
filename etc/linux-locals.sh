@@ -96,22 +96,24 @@ install_ncurses() {
 install_zsh() {
     set -e
 
-    ZSH_VER="5.4.1"
-    TMP_ZSH_DIR="/tmp/$USER/zsh/"; mkdir -p $TMP_ZSH_DIR
+#     ZSH_VER="5.4.1"
+#     TMP_ZSH_DIR="/tmp/$USER/zsh/"; mkdir -p $TMP_ZSH_DIR
 
-    wget -nc -O $TMP_ZSH_DIR/zsh.tar.gz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.gz/download"
-    tar -xvzf $TMP_ZSH_DIR/zsh.tar.gz -C $TMP_ZSH_DIR --strip-components 1
-    cd $TMP_ZSH_DIR
+#     wget -nc -O $TMP_ZSH_DIR/zsh.tar.gz "https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VER}/zsh-${ZSH_VER}.tar.gz/download"
+#     tar -xvzf $TMP_ZSH_DIR/zsh.tar.gz -C $TMP_ZSH_DIR --strip-components 1
+#     cd $TMP_ZSH_DIR
 
-    if [[ -d "$PREFIX/include/ncurses" ]]; then
-        export CFLAGS="-I$PREFIX/include -I$PREFIX/include/ncurses"
-        export LDFLAGS="-L$PREFIX/lib/"
-    fi
+#     if [[ -d "$PREFIX/include/ncurses" ]]; then
+#         export CFLAGS="-I$PREFIX/include -I$PREFIX/include/ncurses"
+#         export LDFLAGS="-L$PREFIX/lib/"
+#     fi
 
-    ./configure --prefix="$PREFIX"
-    make clean && make -j8 && make install
+#     ./configure --prefix="$PREFIX"
+#     make clean && make -j8 && make install
 
-    ~/.local/bin/zsh --version
+    apt update && apt install zsh -y
+
+#     ~/.local/bin/zsh --version
 }
 
 install_node() {
