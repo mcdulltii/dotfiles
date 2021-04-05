@@ -388,9 +388,10 @@ for target, source in sorted(tasks.items()):
         ))
 
 if args.one_liner:
+    log("\n", cr=False)
     log("- Please restart shell (e.g. " + CYAN("`exec zsh`") + ") if necessary.")
     log("- Next step: " + CYAN("`dotfiles update`"))
-    log("\n\n", cr=False)
+    log("\n", cr=False)
     sys.exit()
 
 errors = []
