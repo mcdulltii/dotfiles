@@ -19,8 +19,8 @@ run-shell "tmux setenv -g TMUX_VERSION $(tmux -V | cut -c 6-)"
 
 # use <C-a><C-a> to switch window,
 # and <C-a>a to control nested sessions
-bind-key C-a last-window
-bind-key a send-prefix
+# bind-key C-a last-window
+# bind-key a send-prefix
 
 # enable vi-mode
 setw -g mode-keys vi
@@ -51,10 +51,10 @@ bind-key : command-prompt
 bind-key r source-file ~/.tmux.conf \; display "Reloaded from ~/.tmux.conf"
 bind-key L clear-history
 
-bind-key space next-window
-bind-key bspace previous-window
-bind-key enter next-layout
-bind-key C-o rotate-window
+# bind-key space next-window
+# bind-key bspace previous-window
+# bind-key enter next-layout
+# bind-key C-o rotate-window
 
 bind-key + select-layout main-horizontal
 bind-key = select-layout main-vertical
