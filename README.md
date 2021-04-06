@@ -21,10 +21,16 @@ If target files already exist (e.g. `~/.vim`, `~/.vimrc`), you will need to manu
 
 ### Docker Installation:
 
-```
+```bash
 wget https://github.com/mcdulltii/dotfiles/raw/master/docker/Dockerfile
 docker build . -t docker_zsh
 docker run -it docker_zsh
+```
+
+### Docker Hub Installation:
+
+```bash
+docker run -it mcdulltii/zsh
 ```
 
 Troubleshooting for docker image in [`./docker/`](./docker/README.md)
