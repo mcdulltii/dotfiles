@@ -1,21 +1,21 @@
-FROM node:15.13.0-stretch
+FROM alpine:latest
 
-RUN apt update && \
-    apt install python3 python3-pip -y
+RUN apk update
 
-RUN apt install tmux vim -y
+RUN apk add zsh vim tmux git perl
 
-RUN apt install locales -y && \
-    echo "US/Pacific" > /etc/timezone && \
-    dpkg-reconfigure -f noninteractive tzdata && \
-    sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=en_US.UTF-8
+RUN sed -i -e "s/bin\/ash/bin\/zsh/" /etc/passwd
 
-RUN pip3 install wheel setuptools && \
-    pip3 install pynvim
+RUN git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
+    sh ~/.vim_runtime/install_awesome_vimrc.sh
 
-RUN curl -fsSL https://raw.githubusercontent.com/mcdulltii/dotfiles/master/etc/install | bash
+RUN cd && git clone https://github.com/gpakosz/.tmux.git && \
+    ln -s -f .tmux/.tmux.conf
 
-ENTRYPOINT ["zsh"]
+RUN mkdir -p "$HOME/.zsh" && \
+    git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure" && \
+    echo "fpath+=$HOME/.zsh/pure" >> $HOME/.zshrc && \
+    echo "autoload -U promptinit; promptinit" >> $HOME/.zshrc && \
+    echo "prompt pure" >> $HOME/.zshrc
+
+ENTRYPOINT ["/bin/zsh"]
